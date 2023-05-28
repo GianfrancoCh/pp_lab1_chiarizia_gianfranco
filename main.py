@@ -98,7 +98,7 @@ dreamteam = leer_archivo("C:/Users/gianf/OneDrive/Escritorio/UTN/PARCIAL/dt.json
 jugadores = jugadores_equipo(dreamteam)
 
 
-
+dream_team_app(jugadores)
 
 
 # dream_team_app(jugadores)
