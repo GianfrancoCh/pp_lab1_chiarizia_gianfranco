@@ -200,3 +200,68 @@ def imprimir_resultado_calculo_max_min(jugadores,clave:str,clave_2:str,max_min:s
     jugador = calcular_max_min_dato(jugadores,clave,clave_2,max_min)
     nombre = obtener_nombre_capitalizado(jugador)
     print("El jugador con el {0} es {1}, con {2} {3}".format(max_min,nombre,jugador[clave][clave_2],clave_2))
+    
+def mostrar_jugadores_mayor_valor(jugadores:list,clave:str,valor:float):
+    
+    lista_mayor_valor = [] 
+    for jugador in jugadores:
+        if float(jugador["estadisticas"][clave]) > valor:
+            lista_mayor_valor.append(jugador["nombre"])
+    
+    if len(lista_mayor_valor) == 0:
+        print("No hay jugador con mayor de {0} {1}".format(valor,clave))  
+    else:
+        print(lista_mayor_valor)  
+
+
+def mostrar_jugador_mayor_logros(jugadores:list):
+    
+    flag = True
+    jugador_max_logros = {}
+    
+    for jugador in jugadores:
+        if flag or len(jugador["logros"]) > len(jugador_max_logros["logros"]):
+            flag = False
+            jugador_max_logros = jugador
+    
+    print("El jugador con mayor logros es {0} con {1}".format(jugador_max_logros["nombre"],jugador_max_logros["logros"]))
+    
+    
+def sumar_dato_jugador(jugadores:list,clave:str,clave_2:str):
+    suma = 0 
+    for jugador in jugadores:
+        if isinstance(jugador,dict) and clave in jugador:
+            suma += jugador[clave][clave_2]
+        else:
+            return -1
+
+    return suma
+    
+def calcular_promedio_clave_estadisticas(jugadores:list,clave:str,clave_2:str)->float:
+    
+    cantidad_jugadores = len(jugadores)
+    
+    suma = sumar_dato_jugador(jugadores,clave,clave_2)
+    
+    return dividir(suma,cantidad_jugadores)     
+  
+            
+def dividir(dividendo,divisor)->float:
+    
+    if divisor == 0:
+        return 0
+    else:
+        return dividendo/divisor
+    
+def promedio_puntos_exc_menor(jugadores:list):
+    
+    jugador_menor_puntos = calcular_max_min_dato(jugadores,"estadisticas","promedio_puntos_por_partido","minimo")
+    jugadores_calculo_promedio = []
+    
+    for jugador in jugadores:
+        if jugador != jugador_menor_puntos:
+            jugadores_calculo_promedio.append(jugador)
+            
+    promedio = calcular_promedio_clave_estadisticas(jugadores_calculo_promedio,"estadisticas","promedio_puntos_por_partido")
+    
+    return promedio 

@@ -69,23 +69,23 @@ def dream_team_app(lista:list):
             case 9:
                 imprimir_resultado_calculo_max_min(jugadores,"estadisticas","asistencias_totales","maximo")
             case 10:
-                print("j")
+                mostrar_jugadores_mayor_valor(jugadores,"promedio_puntos_por_partido",20)
             case 11:
-                print("K")
+                mostrar_jugadores_mayor_valor(jugadores,"promedio_rebotes_por_partido",20)
             case 12:
-                print("L")
+                mostrar_jugadores_mayor_valor(jugadores,"promedio_asistencias_por_partido",20)
             case 13:
                 imprimir_resultado_calculo_max_min(jugadores,"estadisticas","robos_totales","maximo")   
             case 14:
                 imprimir_resultado_calculo_max_min(jugadores,"estadisticas","bloqueos_totales","maximo")
             case 15:
-                print("O")    
+                mostrar_jugadores_mayor_valor(jugadores,"porcentaje_tiros_libres",20)
             case 16:   
-                print("\n-------------- CHAU -------------")   
+                promedio_puntos_exc_menor(jugadores)
             case 17:
-                pass
+                mostrar_jugador_mayor_logros(jugadores)
             case 18:
-                print("\n-------------- CHAU -------------")
+                mostrar_jugadores_mayor_valor(jugadores,"porcentaje_tiros_triples",20)
             case 19:
                 imprimir_resultado_calculo_max_min(jugadores,"estadisticas","temporadas","maximo")
             case 20:
@@ -98,7 +98,11 @@ dreamteam = leer_archivo("C:/Users/gianf/OneDrive/Escritorio/UTN/PARCIAL/dt.json
 jugadores = jugadores_equipo(dreamteam)
 
 
-dream_team_app(jugadores)
+# Calcular y mostrar el promedio de puntos por partido del equipo excluyendo al jugador con la menor cantidad de puntos por partido.
+
+
+
+
 
 
 # dream_team_app(jugadores)
