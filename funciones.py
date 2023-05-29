@@ -20,6 +20,13 @@ def leer_archivo(nombre_archivo:str):
         
     return diccionario
 
+
+def transformar_texto(texto):
+    palabras = texto.split('_')
+    resultado = ' '.join(palabras).capitalize()
+    return resultado
+
+
 def jugadores_equipo(equipo:dict)->list:
     
     """
@@ -141,25 +148,6 @@ def buscar_salon_fama_jugador(jugadores):
     else:
         print("\nEl jugador {0} NO es miembro del salon de la fama del baloncesto".format(jugador["nombre"]))  
         
-def quick_sort(lista_original:list,flag_orden:bool)->list:
-    lista_de = []
-    lista_iz = []
-    if(len(lista_original)<=1):
-        return lista_original
-    else:
-        pivot = lista_original[0]
-        for elemento in lista_original[1:]:
-            if(elemento > pivot):
-                lista_de.append(elemento)
-            else:
-                lista_iz.append(elemento)
-    lista_iz = quick_sort(lista_iz,True)
-    lista_iz.append(pivot) 
-    lista_de = quick_sort(lista_de,True)
-    lista_iz.extend(lista_de) 
-    return lista_iz
-
-
 def calcular_min(jugadores:list,clave:str,clave_2:str):
     flag = True
     jugador_min = {}
@@ -201,23 +189,35 @@ def imprimir_resultado_calculo_max_min(jugadores,clave:str,clave_2:str,max_min:s
     nombre = obtener_nombre_capitalizado(jugador)
     print("El jugador con el {0} es {1}, con {2} {3}".format(max_min,nombre,jugador[clave][clave_2],clave_2))
     
-def mostrar_jugadores_mayor_valor(jugadores:list,clave:str,valor:float):
+def mostrar_jugadores_mayor_valor_estadisticas(jugadores:list,clave:str):
     
-    lista_mayor_valor = [] 
+    lista_mayor_valor = []
+    valor = int(input("\nIngrese el valor a buscar:\n"))
     for jugador in jugadores:
         if float(jugador["estadisticas"][clave]) > valor:
-            lista_mayor_valor.append(jugador["nombre"])
+            lista_mayor_valor.append(jugador)
     
     if len(lista_mayor_valor) == 0:
-        print("No hay jugador con mayor de {0} {1}".format(valor,clave))  
+        return None
     else:
-        print(lista_mayor_valor)  
+        return lista_mayor_valor
+    # if len(lista_mayor_valor) == 0:
+    #     print("No hay jugador con mayor de {0} {1}".format(valor,clave))  
+    # else:
+    #     print(lista_mayor_valor)  
 
 
-def mostrar_jugador_mayor_logros(jugadores:list):
+def mostrar_lista_clave(jugadores:list,clave:str):
+    
+    lista = mostrar_jugadores_mayor_valor_estadisticas(jugadores,clave)
+    clave_print = transformar_texto(clave)
+    for jugador in lista:
+        print("{0} | {1} {2}".format(jugador["nombre"],clave_print,jugador["estadisticas"][clave]))
+
+def mostrar_mayor_logros(jugadores:list,clave:str,):
     
     flag = True
-    jugador_max_logros = {}
+    jugador_max_clave = {}
     
     for jugador in jugadores:
         if flag or len(jugador["logros"]) > len(jugador_max_logros["logros"]):
@@ -265,3 +265,51 @@ def promedio_puntos_exc_menor(jugadores:list):
     promedio = calcular_promedio_clave_estadisticas(jugadores_calculo_promedio,"estadisticas","promedio_puntos_por_partido")
     
     return promedio 
+
+def quick_sort(lista_original:list,flag_orden:bool)->list:
+    lista_de = []
+    lista_iz = []
+    if(len(lista_original)<=1):
+        return lista_original
+    else:
+        pivot = lista_original[0]
+        for elemento in lista_original[1:]:
+            if(elemento > pivot):
+                lista_de.append(elemento)
+            else:
+                lista_iz.append(elemento)
+    lista_iz = quick_sort(lista_iz,True)
+    lista_iz.append(pivot) 
+    lista_de = quick_sort(lista_de,True)
+    lista_iz.extend(lista_de) 
+    return lista_iz
+
+def ordenar_lista_clave(lista:list,flag_orden:bool,clave:str):
+    
+    rango_a = len(lista) - 1
+    lista_orden = lista[:]
+    flag_swap = True
+
+    while(flag_swap):
+        flag_swap = False
+
+        for indice_A in range(rango_a):
+            if  flag_orden == False and lista_orden[indice_A][clave] < lista_orden[indice_A+1][clave] \
+             or flag_orden == True and lista_orden[indice_A][clave] > lista_orden[indice_A+1][clave]:
+                lista_orden[indice_A],lista_orden[indice_A+1] = lista_orden[indice_A+1],lista_orden[indice_A]
+                flag_swap = True
+    
+    return lista_orden
+
+def listar_clave_ordenado_alfabeticamente(jugadores:list,clave:str):
+    
+    lista = ordenar_lista_clave(jugadores,True,"nombre")
+    clave_print = transformar_texto(clave)
+    
+    for jugador in lista: 
+        print("El {0} de {1} es {2}".format(clave_print,jugador["nombre"],jugador["estadisticas"][clave]))
+        
+def mostrar_posicion_mayor_estadisticas(jugadores:list,clave:str):
+
+    lista = mostrar_jugadores_mayor_valor_estadisticas(jugadores,clave)
+    listar_clave_ordenado_alfabeticamente(lista,clave)

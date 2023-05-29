@@ -59,7 +59,7 @@ def dream_team_app(lista:list):
             case 4:    
                 buscar_logros_jugador(jugadores)  
             case 5:  
-                pass
+                listar_clave_ordenado_alfabeticamente(jugadores,"promedio_puntos_por_partido")
             case 6:
                 buscar_salon_fama_jugador(jugadores)
             case 7:     
@@ -69,43 +69,35 @@ def dream_team_app(lista:list):
             case 9:
                 imprimir_resultado_calculo_max_min(jugadores,"estadisticas","asistencias_totales","maximo")
             case 10:
-                mostrar_jugadores_mayor_valor(jugadores,"promedio_puntos_por_partido",20)
+                mostrar_lista_clave(jugadores,"promedio_puntos_por_partido")
             case 11:
-                mostrar_jugadores_mayor_valor(jugadores,"promedio_rebotes_por_partido",20)
+                print(mostrar_jugadores_mayor_valor_estadisticas(jugadores,"promedio_rebotes_por_partido"))
             case 12:
-                mostrar_jugadores_mayor_valor(jugadores,"promedio_asistencias_por_partido",20)
+                print(mostrar_jugadores_mayor_valor_estadisticas(jugadores,"promedio_asistencias_por_partido"))
             case 13:
                 imprimir_resultado_calculo_max_min(jugadores,"estadisticas","robos_totales","maximo")   
             case 14:
                 imprimir_resultado_calculo_max_min(jugadores,"estadisticas","bloqueos_totales","maximo")
             case 15:
-                mostrar_jugadores_mayor_valor(jugadores,"porcentaje_tiros_libres",20)
+                print(mostrar_jugadores_mayor_valor_estadisticas(jugadores,"porcentaje_tiros_libres"))
             case 16:   
                 promedio_puntos_exc_menor(jugadores)
             case 17:
-                mostrar_jugador_mayor_logros(jugadores)
+                mostrar_mayor_logros(jugadores)
             case 18:
-                mostrar_jugadores_mayor_valor(jugadores,"porcentaje_tiros_triples",20)
+                print(mostrar_jugadores_mayor_valor_estadisticas(jugadores,"porcentaje_tiros_triples"))
             case 19:
                 imprimir_resultado_calculo_max_min(jugadores,"estadisticas","temporadas","maximo")
             case 20:
-                print("\n-------------- CHAU -------------")
+                mostrar_posicion_mayor_estadisticas(jugadores,"porcentaje_tiros_de_campo")
             case other:
                 print("INVALIDO")
 
 dreamteam = leer_archivo("C:/Users/gianf/OneDrive/Escritorio/UTN/PARCIAL/dt.json")
 
-jugadores = jugadores_equipo(dreamteam)
-
-
-# Calcular y mostrar el promedio de puntos por partido del equipo excluyendo al jugador con la menor cantidad de puntos por partido.
-
-
-
-
-
-
-# dream_team_app(jugadores)
+jugadores = jugadores_equipo(dreamteam)       
+  
+dream_team_app(jugadores)
 
 #1
 # imprimir_jugadores_posicion(jugadores)
