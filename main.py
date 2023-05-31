@@ -130,7 +130,6 @@ def cantidad_all_star(jugadores:list):
 
     return jugadores_allstar
 
-
 # cantidad_jugadores_posicion(jugadores)       
 # mejor_jugadores_por_estadisticas(jugadores)
 # mejor_estadistica(jugadores)
