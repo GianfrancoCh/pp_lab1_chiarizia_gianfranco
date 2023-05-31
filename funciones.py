@@ -377,7 +377,7 @@ def ordenar_lista_clave(lista:list,flag_orden:bool,clave:str):
     Ordena una lista de elementos por el valor una clave especifica
     
     -lista: lista de elementos a ordenar
-    -flag_order: indica el tipo de ordenamiento.Si es True, se ordena de forma ascendente. Si es False,
+    -flag_orden: indica el tipo de ordenamiento.Si es True, se ordena de forma ascendente. Si es False,
     se ordena de forma descendente.
     -clave: clave de los valores a ordenar
     Retorno
