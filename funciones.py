@@ -1,5 +1,6 @@
 import json
 import re
+import csv
 
 def imprimir_dato(dato_a_imprimir:str):
     '''
@@ -422,7 +423,54 @@ def mostrar_posicion_mayor_estadisticas(jugadores:list,clave:str):
     listar_clave_ordenado_alfabeticamente(lista,clave)
     
     
+#BONUS 23
+
+def ordenar_lista_clave_doble(lista:list,flag_orden:bool,clave:str,clave_2:str):
     
+    
+    lista_nueva = lista[:]
+    n = len(lista_nueva)
+    flag_swap = True
+    
+    while flag_swap:
+        flag_swap = False
+        for indice_A in range(n - 1):
+            if (flag_orden and lista_nueva[indice_A][clave][clave_2] > lista_nueva[indice_A + 1][clave][clave_2]) or \
+                    (not flag_orden and lista_nueva[indice_A][clave][clave_2] < lista_nueva[indice_A + 1][clave][clave_2]):
+                lista_nueva[indice_A], lista_nueva[indice_A + 1] = lista_nueva[indice_A + 1], lista_nueva[indice_A]
+                flag_swap = True
+
+    return lista_nueva
+
+def jugadores_posicion_estadisticas(jugadores:list):
+    
+    lista_estadisticas = ["puntos_totales","rebotes_totales","asistencias_totales","robos_totales"]
+    jugadores_pos_estadisticas = []
+    for jugador in jugadores:
+        jugadores_pos_estadisticas.append({"nombre":jugador["nombre"]})
+    
+    for estadistica in lista_estadisticas:
+        lista_jugadores_estadistica_orden = ordenar_lista_clave_doble(jugadores,False,"estadisticas",estadistica)
+        
+        for jugador_ordenado in lista_jugadores_estadistica_orden:
+            for jugador in jugadores_pos_estadisticas:
+                if jugador_ordenado["nombre"] == jugador["nombre"]:
+                    indice = lista_jugadores_estadistica_orden.index(jugador_ordenado)
+                    pos = indice + 1 
+                    jugador[estadistica] = pos
+    
+    return jugadores_pos_estadisticas
+    
+
+def exportar_lista_csv(jugadores):
+    
+    with open('jugadores_posicion.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Nombre","Puntos","Rebotes","Asistencias","Robos"])
+        for jugador in jugadores:
+            writer.writerow([jugador["nombre"],jugador["puntos_totales"],jugador["rebotes_totales"],jugador["asistencias_totales"],jugador["robos_totales"]])
+
+    print("Lista exportada.")
 
 #FUNCIONES MENU
 
@@ -453,7 +501,8 @@ def imprimir_menu():
     print("18. Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros triples superior a ese valor.")
     print("19. Mostrar el jugador con la mayor cantidad de temporadas jugadas")
     print("20. Ingresar un valor y mostrar los jugadores, ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior a ese valor.")
-    print("21. SALIR DEL SISTEMA")
+    print("23. Calcular de cada jugador cuál es su posición en cada uno de los siguientes ranking y exportar a CSV")
+    print("24. SALIR DEL SISTEMA")
 
 
 def menu_opcion():
@@ -463,7 +512,7 @@ def menu_opcion():
     imprimir_menu()
     
     opcion = input("\nIngrese la opción deseada: \n")
-    if re.match(r'^(?:[0-9]|1[0-9]|20|21)$', opcion):
+    if re.match(r'^(?:[0-9]|1[0-9]|20|23)$', opcion):
         return int(opcion)
     else:
         return -1
@@ -523,7 +572,10 @@ def dream_team_app(jugadores:list):
                 imprimir_resultado_calculo_max_min(jugadores,"estadisticas","temporadas","maximo")
             case 20:
                 mostrar_posicion_mayor_estadisticas(jugadores,"porcentaje_tiros_de_campo")
-            case 21:
+            case 23:
+                lista = jugadores_posicion_estadisticas(jugadores)
+                exportar_lista_csv(lista)
+            case 24:
                 print("----------------------------------------------------------------")
                 print("--------------------CERRANDO LA APLICACION----------------------")
                 print("----------------------------------------------------------------")
@@ -532,3 +584,130 @@ def dream_team_app(jugadores:list):
                 print("----------------------------------------------------------------")
                 print("---------------------INGRESE OPCION VALIDA----------------------")
                 print("----------------------------------------------------------------")
+                
+
+
+#EXTRAS PARCIAL
+
+              
+def cantidad_jugadores_posicion(jugadores:list):
+    
+    cant_alero = 0
+    cant_escolta = 0
+    cant_base = 0
+    cant_ala = 0
+    cant_pivot = 0
+    
+    for jugador in jugadores:
+        if jugador["posicion"] == "Alero":
+            cant_alero += 1
+        elif jugador["posicion"] == "Escolta":
+            cant_escolta += 1
+        elif jugador["posicion"] == "Base":
+            cant_base += 1
+        elif jugador["posicion"] == "Ala-Pivot":
+            cant_ala += 1
+        elif jugador["posicion"] == "Pivot":
+            cant_pivot += 1
+    
+    print("Base: {0}\nEscolta: {1}\nBase: {2}\nAla-Pivot: {3}\nPivot: {4}".format(cant_alero,cant_escolta,cant_base,cant_ala,cant_pivot))
+
+
+def mejor_jugadores_por_estadisticas(jugadores:list):
+    
+    jug_temp = calcular_max_min_dato(jugadores,"estadisticas","temporadas","maximo")
+    jug_punt_tot = calcular_max_min_dato(jugadores,"estadisticas","puntos_totales","maximo")
+    jug_prom_ppp = calcular_max_min_dato(jugadores,"estadisticas","promedio_puntos_por_partido","maximo")
+    jug_reb_tot = calcular_max_min_dato(jugadores,"estadisticas","rebotes_totales","maximo")
+    jug_prom_rpp = calcular_max_min_dato(jugadores,"estadisticas","promedio_rebotes_por_partido","maximo")
+    jug_asis_tot = calcular_max_min_dato(jugadores,"estadisticas","asistencias_totales","maximo")
+    jug_prom_app = calcular_max_min_dato(jugadores,"estadisticas","promedio_asistencias_por_partido","maximo")
+    jug_rob_tot = calcular_max_min_dato(jugadores,"estadisticas","robos_totales","maximo")
+    jug_bloq_tot = calcular_max_min_dato(jugadores,"estadisticas","bloqueos_totales","maximo")
+    jug_porc_tdc = calcular_max_min_dato(jugadores,"estadisticas","porcentaje_tiros_de_campo","maximo")
+    jug_porc_tl = calcular_max_min_dato(jugadores,"estadisticas","porcentaje_tiros_libres","maximo")
+    jug_por_tt = calcular_max_min_dato(jugadores,"estadisticas","porcentaje_tiros_triples","maximo")
+
+    
+    print("Mayor cantidad temporadas: {0} ({1})".format(jug_temp["nombre"],jug_temp["estadisticas"]["temporadas"]))
+    print("Mayor cantidad puntos totales: {0} ({1})".format(jug_punt_tot["nombre"],jug_punt_tot["estadisticas"]["puntos_totales"]))
+    print("Mayor cantidad promedio por partido: {0} ({1})".format(jug_prom_ppp["nombre"],jug_prom_ppp["estadisticas"]["promedio_puntos_por_partido"]))
+    print("Mayor cantidad rebotes totales: {0} ({1})".format(jug_reb_tot["nombre"],jug_reb_tot["estadisticas"]["rebotes_totales"]))
+    print("Mayor promedio rebotes por partido: {0} ({1})".format(jug_prom_rpp["nombre"],jug_prom_rpp["estadisticas"]["promedio_rebotes_por_partido"])) 
+    print("Mayor cantidad de asistencias totales: {0} ({1})".format(jug_asis_tot["nombre"],jug_asis_tot["estadisticas"]["asistencias_totales"]))
+    print("Mayor promedio asistencias por partidos: {0} ({1})".format(jug_prom_app["nombre"],jug_prom_app["estadisticas"]["promedio_asistencias_por_partido"]))
+    print("Mayor cantidad robos totales: {0} ({1})".format(jug_rob_tot["nombre"],jug_rob_tot["estadisticas"]["robos_totales"]))
+    print("Mayor cantidad bloqueos totales: {0} ({1})".format(jug_bloq_tot["nombre"],jug_rob_tot["estadisticas"]["bloqueos_totales"]))
+    print("Mayor cantidad porcentaje tiros de campo: {0} ({1})".format(jug_porc_tdc["nombre"],jug_porc_tdc["estadisticas"]["porcentaje_tiros_de_campo"]))
+    print("Mayor cantidad porcentaje tiros libres: {0} ({1})".format(jug_porc_tl["nombre"],jug_porc_tl["estadisticas"]["porcentaje_tiros_libres"]))
+    print("Mayor cantidad porcentaje tiros triples: {0} ({1})".format(jug_por_tt["nombre"],jug_por_tt["estadisticas"]["porcentaje_tiros_triples"]))
+    
+def mejor_estadistica(jugadores:list):
+    
+    jugadores_estadisticas = []
+    flag = True
+    
+    jug_temp = calcular_max_min_dato(jugadores,"estadisticas","temporadas","maximo")
+    jug_punt_tot = calcular_max_min_dato(jugadores,"estadisticas","puntos_totales","maximo")
+    jug_prom_ppp = calcular_max_min_dato(jugadores,"estadisticas","promedio_puntos_por_partido","maximo")
+    jug_reb_tot = calcular_max_min_dato(jugadores,"estadisticas","rebotes_totales","maximo")
+    jug_prom_rpp = calcular_max_min_dato(jugadores,"estadisticas","promedio_rebotes_por_partido","maximo")
+    jug_asis_tot = calcular_max_min_dato(jugadores,"estadisticas","asistencias_totales","maximo")
+    jug_prom_app = calcular_max_min_dato(jugadores,"estadisticas","promedio_asistencias_por_partido","maximo")
+    jug_rob_tot = calcular_max_min_dato(jugadores,"estadisticas","robos_totales","maximo")
+    jug_bloq_tot = calcular_max_min_dato(jugadores,"estadisticas","bloqueos_totales","maximo")
+    jug_porc_tdc = calcular_max_min_dato(jugadores,"estadisticas","porcentaje_tiros_de_campo","maximo")
+    jug_porc_tl = calcular_max_min_dato(jugadores,"estadisticas","porcentaje_tiros_libres","maximo")
+    jug_por_tt = calcular_max_min_dato(jugadores,"estadisticas","porcentaje_tiros_triples","maximo")
+    
+    for jugador in jugadores:
+        jugadores_estadisticas.append({"nombre":jugador["nombre"],"cant_tops":0})
+    
+    for jugador in jugadores_estadisticas:
+        
+        if jugador["nombre"] == jug_temp["nombre"]:
+            jugador["cant_tops"] += 1
+        if jugador["nombre"] == jug_punt_tot["nombre"]:
+            jugador["cant_tops"] += 1 
+        if jugador["nombre"] == jug_prom_ppp["nombre"]:
+            jugador["cant_tops"] += 1 
+        if jugador["nombre"] == jug_reb_tot["nombre"]:
+            jugador["cant_tops"] += 1
+        if jugador["nombre"] == jug_prom_rpp["nombre"]:
+            jugador["cant_tops"] += 1 
+        if jugador["nombre"] == jug_asis_tot["nombre"]:
+            jugador["cant_tops"] += 1 
+        if jugador["nombre"] == jug_prom_app["nombre"]:
+            jugador["cant_tops"] += 1 
+        if jugador["nombre"] == jug_rob_tot["nombre"]:
+            jugador["cant_tops"] += 1
+        if jugador["nombre"] == jug_bloq_tot["nombre"]:
+            jugador["cant_tops"] += 1
+        if jugador["nombre"] == jug_porc_tdc["nombre"]:
+            jugador["cant_tops"] += 1 
+        if jugador["nombre"] == jug_porc_tl["nombre"]:
+            jugador["cant_tops"] += 1
+        if jugador["nombre"] == jug_por_tt["nombre"]:
+            jugador["cant_tops"] += 1 
+            
+    for jugador in jugadores_estadisticas: 
+        if flag == True or jugador["cant_tops"] > jug_max["cant_tops"]:
+            flag = False
+            jug_max = jugador
+        
+    print("El jugador con las mejores estadisticas es {0} con un top en {1} estadisticas".format(jug_max["nombre"],jug_max["cant_tops"]))
+    
+       
+def cantidad_all_star(jugadores:list):
+    
+    flag = True
+    jugadores_allstar = []
+    
+    for jugador in jugadores:
+        for logro in jugador["logros"]:
+            if "veces All-Star" in logro:
+                numero_all_star = re.findall(r'\d+', logro)
+                numero_all_star = int(numero_all_star[0])
+                jugadores_allstar.append({"nombre":jugador["nombre"],"cant_all_star":numero_all_star})
+
+    return jugadores_allstar
